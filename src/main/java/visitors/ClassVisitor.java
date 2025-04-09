@@ -596,10 +596,15 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
      *                  the class we are referring to
      */
     private void registerCoupling(String className) {
-        if (withinAnalysisBounds(className)) {
+        if (withinAnalysisBounds(className) && isNotCurrentClass(className)) {
             registerEfferentCoupling(className);
             registerAfferentCoupling(className);
         }
+    }
+
+    private boolean isNotCurrentClass(String className) {
+        String currentClassName = javaClass.resolve().getQualifiedName();
+        return !currentClassName.equals(className);
     }
 
     /**
