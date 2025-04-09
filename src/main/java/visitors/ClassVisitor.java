@@ -368,7 +368,7 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
         int methodCount = allMethods.size();
 
         if (methodCount == 0) {
-            return -1;
+            return 0;
         }
 
         Set<String> denum = new HashSet<>();
@@ -382,7 +382,7 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
                 })
                 .sum();
 
-        return denum.isEmpty() ? -1 : numerator / (methodCount * denum.size());
+        return denum.isEmpty() ? 0 : numerator / (methodCount * denum.size());
     }
 
     /**

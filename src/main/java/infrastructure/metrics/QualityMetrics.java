@@ -195,7 +195,46 @@ public class QualityMetrics {
     }
 
     public String toString(String delimiter) {
-        return getWmc() + delimiter + getDit() + delimiter + getNocc() + delimiter + getCbo() + delimiter + getRfc() + delimiter + getLcom() + delimiter + getComplexity() + delimiter + getNom() + delimiter + getMpc() + delimiter + getDac() + delimiter + getSize1() + delimiter + getSize2() + delimiter + getDsc() + delimiter + getNoh() + delimiter + getAna() + delimiter + getDam() + delimiter + getDcc() + delimiter + getCamc() + delimiter + getMoa() + delimiter + getMfa() + delimiter + getNop() + delimiter + getCis() + delimiter + getNpm() + delimiter + getReusability() + delimiter + getFlexibility() + delimiter + getUnderstandability() + delimiter + getFunctionality() + delimiter + getExtendibility() + delimiter + getEffectiveness() + delimiter + getFanIn();
+        return formatValue(getWmc()) + delimiter
+                + getDit() + delimiter 
+                + getNocc() + delimiter 
+                + formatValue(getCbo()) + delimiter 
+                + formatValue(getRfc()) + delimiter 
+                + formatValue(getLcom()) + delimiter 
+                + formatValue(getComplexity()) + delimiter 
+                + formatValue(getNom()) + delimiter 
+                + formatValue(getMpc()) + delimiter 
+                + getDac() + delimiter 
+                + getSize1() + delimiter 
+                + getSize2() + delimiter 
+                + getDsc() + delimiter 
+                + getNoh() + delimiter 
+                + getAna() + delimiter 
+                + formatValue(getDam()) + delimiter 
+                + formatValue(getDcc()) + delimiter 
+                + formatValue(getCamc()) + delimiter 
+                + getMoa() + delimiter 
+                + formatValue(getMfa()) + delimiter 
+                + getNop() + delimiter 
+                + getCis() + delimiter 
+                + getNpm() + delimiter 
+                + formatValue(getReusability()) + delimiter 
+                + formatValue(getFlexibility()) + delimiter 
+                + formatValue(getUnderstandability()) + delimiter 
+                + formatValue(getFunctionality()) + delimiter 
+                + formatValue(getExtendibility()) + delimiter 
+                + formatValue(getEffectiveness()) + delimiter 
+                + getFanIn();
+    }
+    
+    /**
+     * Formats a double value to have 2 decimal places.
+     *
+     * @param value The double value to format
+     * @return The formatted value as a string with 2 decimal places
+     */
+    private String formatValue(Double value) {
+        return String.format("%.2f", value).replace(",", ".");
     }
 }
 

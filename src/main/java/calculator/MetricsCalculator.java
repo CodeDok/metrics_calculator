@@ -108,6 +108,7 @@ public class MetricsCalculator {
                                     .stream()
                                     .filter(res -> res.getResult().isPresent())
                                     .filter(cu -> cu.getResult().get().getStorage().isPresent())
+                                    .filter(cu -> !cu.getResult().get().getStorage().get().getPath().toString().contains("Test"))
                                     .forEach(cu -> {
                                         try {
                                             project.getJavaFiles().add(new JavaFile(cu.getResult().get().getStorage().get().getPath().toString().replace(project.getClonePath(), "").substring(1),
