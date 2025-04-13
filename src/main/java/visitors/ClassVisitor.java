@@ -375,6 +375,8 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
         double numerator = allMethods.stream()
                 .mapToDouble(method -> {
                     Set<String> num = method.getParameters().stream()
+                            .filter(param -> !VisitorUtils.isStandardJavaLibrary(
+                                    param.getType().resolve().describe()))
                             .map(param -> param.getType().asString())
                             .collect(Collectors.toSet());
                     denum.addAll(num);
