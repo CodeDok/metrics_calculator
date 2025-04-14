@@ -398,7 +398,7 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
         List<FieldDeclaration> javaClassAttribute = new ArrayList<>(javaClass.getFields());
         totalAttributes = javaClassAttribute.size();
         publicAttributes = javaClassAttribute.stream().filter(a -> (!a.isProtected()) && (!a.isPrivate())).count();
-        return totalAttributes == 0 ? -1 : ((totalAttributes - publicAttributes) / totalAttributes);
+        return totalAttributes == 0 ? 0 : ((totalAttributes - publicAttributes) / totalAttributes);
     }
 
     /**
