@@ -46,7 +46,9 @@ Open a cmd window in the directory where ```MetricsCalculator.jar``` is located 
 java -jar MetricsCalculator.jar <project_root_absolute_path> <outfilename>.csv
 ```
 
-where ```project_root_absolute_path``` and ```outfilename``` are the full path to the root folder of the project you want to parse (ie before the src folders) and the name of the CSV file in which the metric results will be stored, respectively (see also the screenshot below).
+where ```project_root_absolute_path``` and ```outfilename``` are the full path to the root folder of 
+the project you want to parse (ie ../src/main/java folder) (it MUST be the main/java folder because otherwise the resolver will fail) 
+and the name of the CSV file in which the metric results will be stored, respectively (see also the screenshot below).
 
 Alternatively, instead of specifying ```<outfilename>.csv```, you can use the keyword ```str``` to print the metrics directly to the console:
 

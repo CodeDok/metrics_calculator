@@ -1,14 +1,14 @@
 package calculator;
 
-import com.github.javaparser.ParseResult;
-import com.github.javaparser.ParserConfiguration;
-import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
@@ -45,13 +45,14 @@ public class MetricsCalculator {
      * @return 0 if everything went ok, -1 otherwise
      */
     public int start() {
-        ProjectRoot projectRoot = getProjectRoot(project.getClonePath());
-        List<SourceRoot> sourceRoots = projectRoot.getSourceRoots();
+        ParserConfiguration parserConfiguration;
         try {
-            createSymbolSolver(project.getClonePath());
+            parserConfiguration = createSymbolSolver(project.getClonePath());
         } catch (IllegalStateException e) {
             return -1;
         }
+        ProjectRoot projectRoot = getProjectRoot(project.getClonePath(), parserConfiguration);
+        List<SourceRoot> sourceRoots = projectRoot.getSourceRoots();
         if (createFileSet(sourceRoots) == 0) {
             logger.error("No classes could be identified! Exiting...");
             return -1;
@@ -71,9 +72,9 @@ public class MetricsCalculator {
     /**
      * Get the project root
      */
-    private ProjectRoot getProjectRoot(String projectDir) {
+    private ProjectRoot getProjectRoot(String projectDir, ParserConfiguration parserConfiguration) {
         logger.info("Collecting source roots...");
-        return new SymbolSolverCollectionStrategy()
+        return new SymbolSolverCollectionStrategy(parserConfiguration)
                 .collect(Paths.get(projectDir));
     }
 
@@ -82,15 +83,21 @@ public class MetricsCalculator {
      * that will be used to identify
      * user-defined classes
      */
-    private static void createSymbolSolver(String projectDir) {
-        TypeSolver javaParserTypeSolver = new JavaParserTypeSolver(new File(projectDir));
-        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(javaParserTypeSolver);
-        ParserConfiguration parserConfiguration = new ParserConfiguration();
-        parserConfiguration
-                .setSymbolResolver(symbolSolver)
-                .setAttributeComments(false).setDetectOriginalLineSeparator(true);
-        StaticJavaParser
-                .setConfiguration(parserConfiguration);
+    private static ParserConfiguration createSymbolSolver(String projectDir) {
+
+        CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
+
+        ParserConfiguration parserConfiguration = new ParserConfiguration()
+                .setSymbolResolver(new JavaSymbolSolver(combinedTypeSolver))
+                .setAttributeComments(false).setDetectOriginalLineSeparator(true)
+                .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17);
+
+        TypeSolver javaParserTypeSolver = new JavaParserTypeSolver(new File(projectDir), parserConfiguration);
+        combinedTypeSolver.add(new ReflectionTypeSolver(false));
+        combinedTypeSolver.add(javaParserTypeSolver);
+
+        StaticJavaParser.setConfiguration(parserConfiguration);
+        return parserConfiguration;
     }
 
     /**

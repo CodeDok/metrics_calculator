@@ -726,13 +726,12 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
      */
     private void investigateInvocation(MethodDeclaration method) {
         try {
-            method.findAll(MethodCallExpr.class)
-                    .forEach(methodCall -> {
-                        try {
-                            registerMethodInvocation(methodCall.resolve().getPackageName() + "." + methodCall.resolve().getClassName(), methodCall.resolve().getQualifiedSignature());
-                        } catch (Throwable ignored) {
-                        }
-                    });
+            for (MethodCallExpr methodCall : method.findAll(MethodCallExpr.class)) {
+                try {
+                    registerMethodInvocation(methodCall.resolve().getPackageName() + "." + methodCall.resolve().getClassName(), methodCall.resolve().getQualifiedSignature());
+                } catch (Throwable ignored) {
+                }
+            }
         } catch (Throwable ignored) {
         }
     }
